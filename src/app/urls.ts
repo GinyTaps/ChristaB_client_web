@@ -36,12 +36,6 @@ export class Urls {
   public urlPaieT = 'https://christabsecurity.herokuapp.com/';
 
   /*************** Adresse du déploiement définitif *************/
-  public urlRes = 'https://christabres.ew.r.appspot.com/';
-  public urlAvis = 'https://christabavis.ew.r.appspot.com/';
-  public urlHisto = 'https://christabhistorique.ew.r.appspot.com/';
-  public urlSec = 'https://christab-300818.ew.r.appspot.com/';
-  public urlPaie = 'https://christabpaie.ew.r.appspot.com/';
-  public urlImg = 'https://christab.net/christaB_fichiers/'; // 'http://bafagroupe.com/christaB_fichiers/';
 
   /*public urlRes = 'https://christabres.herokuapp.com/';
     public urlSec = 'https://christabsec.herokuapp.com/';
