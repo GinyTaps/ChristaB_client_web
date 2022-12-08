@@ -1,0 +1,245 @@
+<html>
+<head>
+  <!--<nav class="navbar navbar-expand-md bg-primary navbar-light">
+    <a class="navbar-brand" href="#">ChristaB</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" (click)="logOut()">Déconnexion</a>
+      </li>
+    </ul>
+  </nav>-->
+</head>
+<body>
+
+<div class="container" *ngIf="mode === 1">
+  <h2 class="card-header">Utilisateurs
+    <a class="btn-outline-primary float-right" (click)="refreshPage()">
+      <i class="fa fa-spinner"></i> </a>
+  </h2>
+  <table class="table table-striped table-hover table-responsive">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Prénom</th>
+      <th>Email</th>
+      <th>Téléphone</th>
+      <th>N° CNIB</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let u of users | paginate: { itemsPerPage: 10, currentPage: p }">
+      <td>{{u.nom}}</td>
+      <td>{{u.prenom}}</td>
+      <td>{{u.email}}</td>
+      <td>{{u.tel}}</td>
+      <td>{{u.numeroCnib}}</td>
+      <td  style="display: flex">
+        <a class="btn-outline-info actionButton" (click)="detailsUser(u)">
+          <i class="fas fa-info"></i>
+        </a> &nbsp;
+        <a *ngIf="isAuthenticated()" class="btn-outline-warning actionButton" (click)="editUser(u)">
+          <i class="fas fa-edit"></i>
+        </a> &nbsp;
+        <a *ngIf="isAuthenticated()" [swal]="deleteSwal" class="btn-outline-danger">
+          <i class="fas fa-trash"></i>
+        </a>
+        <swal #deleteSwal title="Désactiver l'utilisateur {{u.nom}} {{u.prenom}}?" confirmButtonText="Oui" cancelButtonText="Non"
+              icon="error" confirmButtonColor="Red" [showCancelButton]="true" [focusCancel]="true" (confirm)="disableUser(u)">
+        </swal>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <div class="text-center">
+    <pagination-controls
+      responsive="true"
+      previousLabel="Précédent"
+      nextLabel="Suivant"
+      (pageChange)="p = $event"></pagination-controls>
+  </div>
+
+</div>
+
+<div class="container" *ngIf="mode === 2">
+  <div class="card" *ngIf="user">
+    <div class="card-header">Utilisateur <strong class="text-info"> {{user.nom}} {{user.prenom}} </strong>
+      <div class="card-img">
+        <!--<img style="width: 200px;height: 200px;border-radius: 50%;" [src]="photo"/>-->
+        <img style="width: 100px;" [src]="photo" />
+      </div>
+    </div>
+    <div class="card-body">
+      <div>
+        <label> <strong>Email:</strong> {{user.email}}</label> <br>
+        <label> <strong>Tel:</strong> {{user.tel}}</label> <br>
+        <label> <strong>Type de document:</strong> {{user.typeDocument}}</label> <br>
+        <label> <strong>N° cnib:</strong> {{user.numeroCnib}}</label> <br>
+        <label> <strong>Date d'inscription:</strong> {{user.dateInscription | date:'dd/MM/yyyy'}}</label> <br>
+        <label> <strong>Date de délivrance:</strong> {{user.dateDelivrance | date:'dd/MM/yyyy'}}</label> <br>
+        <label> <strong>Date d'expiration:</strong> {{user.dateExpiration | date:'dd/MM/yyyy'}}</label> <br>
+        <label> <strong>Lieu de délivrance:</strong> {{user.lieuDelivrance}}</label> <br>
+        <label> <strong>Fonction:</strong> {{fonction}}</label> <br>
+        <label> <strong>Numéro SOS:</strong> {{user.telSos}}</label>
+        <div *ngIf="cnibR !== null">
+          <label><strong>Photos de la cnib:</strong> </label> <br>
+          <div class="card align-items-center">
+            <div class="row">
+              <img class="col" [src]="cnibR"/>
+              <!--<img (click)="show(cnibR)" class="col" [src]="cnibR" style="width: 150px"/>
+              <img (click)="show(cnibV)" class="col" [src]="cnibV" style="width: 150px"/>
+              <img (click)="show(cnibT)" class="col" [src]="cnibT" style="width: 150px"/>-->
+            </div>
+            <!--<div class="row">
+              <label class="col">Recto</label>
+              <label class="col">Verso</label>
+              <label class="col">Tenant</label>
+            </div>-->
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!--********* Photos **********-->
+    <div class="text-info" *ngIf="user.idTypeFonction === 1"> Engins </div>
+    <div class="card-body" *ngIf="user.idTypeFonction === 1">
+      <div *ngFor="let e of engins">
+        <label> <strong>Marque:</strong> {{e.marque}}</label> <br>
+        <label> <strong>Modèle:</strong> {{e.modele}}</label> <br>
+        <label> <strong>Immatriculation:</strong> {{e.immatriculation}}</label> <br>
+        <label> <strong>Couleur:</strong> {{e.couleur}}</label> <br>
+        <label> <strong>Type:</strong> {{e.typeEngin}}</label> <br>
+        <!--<label> <strong>Type:</strong> {{e.typeEngin}}</label> <br>
+        <label> <strong>Année du modèle:</strong> {{e.anneeModele}}</label> <br>-->
+        <!--<label> <strong>Type:</strong> {{e.typeEngin}}</label> <br>
+        <label> <strong>Type:</strong> {{e.typeEngin}}</label> <br>
+        <label> <strong>Type:</strong> {{e.typeEngin}}</label> <br>-->
+        <div>
+          <label><strong>Photo de l'engin:</strong> </label> <br>
+          <div class="card align-items-center">
+            <div class="row">
+              <img class="col" [src]="photoEP"/>
+              <!--<img (click)="show(photoEF)" class="col" [src]="photoEF" style="width: 150px"/>
+              <img (click)="show(photoEP)" class="col" [src]="photoEP" style="width: 150px"/>
+              <img (click)="show(photoEA)" class="col" [src]="photoEA" style="width: 150px"/>-->
+            </div>
+            <!--<div class="row">
+              <label class="col">Profil</label>
+              <label class="col">Face</label>
+              <label class="col">Profil</label>
+              <label class="col">Arrière</label>
+            </div>-->
+          </div>
+        </div>
+        <div>
+          <label><strong>Photos de la carte grise:</strong> </label> <br>
+          <div class="card align-items-center">
+            <div class="row">
+              <img class="col" [src]="photoCGR"/>
+              <!--<img (click)="show(photoCGR)" class="col" [src]="photoCGR" style="width: 150px"/>
+              <img (click)="show(photoCGV)" class="col" [src]="photoCGV" style="width: 150px"/>-->
+            </div>
+            <!--<div class="row">
+              <label class="col">Recto</label>
+              <label class="col">Verso</label>
+            </div>-->
+          </div>
+        </div>
+        <div>
+          <label><strong>Photo du permis:</strong> </label> <br>
+          <div class="card align-items-center">
+            <div class="row">
+              <img class="col" [src]="photoPCR" />
+              <!--<img (click)="show(photoPCR)" class="col" [src]="photoPCR" style="width: 150px"/>
+              <img (click)="show(photoPCV)" class="col" [src]="photoPCV" style="width: 150px"/>-->
+            </div>
+            <!--<div class="row">
+              <label class="col">Recto</label>
+              <label class="col">Verso</label>
+            </div>-->
+          </div>
+        </div>
+        <div>
+          <label><strong>Photo de l'assurance:</strong> </label> <br>
+          <div class="card align-items-center">
+            <div class="row">
+              <img class="col" [src]="photoAssuR"/>
+              <!--<img (click)="show(photoAssuR)" class="col" [src]="photoAssuR" style="width: 150px"/>
+              <img (click)="show(photoAssuV)" class="col" [src]="photoAssuV" style="width: 150px"/>-->
+            </div>
+            <!--<div class="row">
+              <label class="col">Recto</label>
+              <label class="col">Verso</label>
+            </div>-->
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!--<div class="card-body">
+      <div class="row align-items-center">
+        <button class="col btn-primary" (click)="retour()">Retour</button>
+        <button class="col btn-primary" *ngIf="!userAdmin.validated" (click)="validateUser()">Valider</button>
+      </div>
+    </div>-->
+    <div class="card-footer">
+      <div class="row align-items-center">
+        <button class="col btn-primary" (click)="retour()">Retour</button>
+        <button class="col btn-primary" *ngIf="!userAdmin.activated" (click)="validateUser()">Valider</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!--=================== Edition ==============-->
+<div class="container" *ngIf="mode === 3">
+  <div class="card" *ngIf="user">
+    <div class="card-header">Edition utilisateur <strong class="text-info"> {{user.nom}} {{user.prenom}} </strong>
+      <div class="card-img">
+        <img style="width: 100px;" [src]="photo" />
+      </div>
+    </div>
+    <div class="card-body">
+      <div>
+        <label> <strong>N° cnib:</strong></label> <input type="text" [(ngModel)]="user.numeroCnib"> <br>
+        <label> <strong>Fonction:</strong></label>
+        <select [(ngModel)]="user.idTypeFonction" (change)="selectTypeFonction($event)">
+        <option disabled>Type fonction</option>
+        <option *ngFor="let t of typeFonctions" [value]="t.idTypeFonction">{{t.libelleTypeFonction}}</option>
+      </select> <br>
+        <label> <strong>Numéro SOS:</strong></label> <input type="text" [(ngModel)]="user.telSos">
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="row align-items-center">
+        <button class="col btn-primary" (click)="retour()">Retour</button>
+        <button class="col btn-primary"  (click)="save()">Valider</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!--============ Popup  où l'image s'affichera ==============-->
+<div [style.display]="showModal ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel"></h4>
+        <button type="button" class="btn btn-default" data-dismiss="modal" (click) = "hide()">Fermer</button>
+      </div>
+      <div class="modal-body">
+        <img [src]="image" id="imagepreview" style="width: 425px; height: 425px;" >
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>

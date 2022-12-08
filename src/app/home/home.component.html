@@ -1,0 +1,38 @@
+<!--<nav class="navbar navbar-expand-md bg-primary navbar-light">
+  &lt;!&ndash; Brand &ndash;&gt;
+  <a class="navbar-brand" href="#">ChristaB</a>
+
+  &lt;!&ndash; Toggler/collapsibe Button &ndash;&gt;
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <ul class="navbar-nav">
+    <li class="nav-item">
+      <a class="nav-link" routerLink="user">Utilisateurs</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" (click)="logOut()">Déconnexion</a>
+    </li>
+  </ul>
+
+  &lt;!&ndash; Navbar links &ndash;&gt;
+  &lt;!&ndash;<div class="collapse navbar-collapse" id="collapsibleNavbar">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/user']">Utilisateur</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Link</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Link</a>
+      </li>
+    </ul>
+  </div>&ndash;&gt;
+</nav>-->
+
+<div class="box" style="text-align: center" *ngIf="isAllowed()">
+<!--<div class="box" style="text-align: center" *ngIf="isAuthenticated()">-->
+  <div class="box-header"> <h1> Bienvenue à ChristaB </h1> </div>
+</div>

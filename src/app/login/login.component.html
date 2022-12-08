@@ -1,0 +1,133 @@
+
+<div class="container align-content-center" style="margin-top: 10%; width: 50%" *ngIf="!isAllowed()">
+<!--<div class="container align-content-center" style="margin-top: 10%; width: 50%" *ngIf="!isAuthenticated()">-->
+  <div class="card" *ngIf="mode === 1">
+    <div class="card-header bg-primary text-white">Connexion</div>
+    <div class="card-body">
+      <form action="" #f="ngForm" (ngSubmit)="onLogin(f.value)">
+        <div class="form-group">
+          <label>Email</label>
+          <input class="form-control" type="text" placeholder="nom@hotmail.fr" name="email" [(ngModel)] = "user.email" (input)="checkEmail($event)" required />
+        </div>
+        <div class="form-group">
+          <label>Mot de passe</label>
+          <input class="form-control" type="password" placeholder=".............." name="password" [(ngModel)]="user.password" (input)="checkPass($event)" required/>
+        </div>
+        <div class="text-danger" *ngIf="showP">{{errorPwd}} </div>
+        <ngx-spinner></ngx-spinner>
+        <div class="text-center">
+          <input type="submit" [disabled]="!f.valid || btnClicked" value="Se connecter" />
+        </div>
+      </form>
+      <a class="float-right pointer-event" (click)="RecoverKey()">Mot de passe oublié ?</a>
+    </div>
+
+  </div>
+
+  <div class="form-area1" *ngIf="mode === 2">
+    <form [formGroup]="keyForm">
+      <div class="card-header bg-primary text-white">Récupération du mot de passe</div>
+      <div class="card-body">
+        <label>Entrez l'email</label>
+        <input class="form-control" type="email" formControlName="email" [(ngModel)]="user.email" placeholder="email"
+                   required=""/>
+      </div>
+      <div class="text-danger" *ngIf="!emailValid">{{errorMail}}</div>
+      <ngx-spinner></ngx-spinner>
+      <section>
+        <button class="btn-primary"
+                (click)="RecoverKey()">Retour
+        </button> &nbsp; &nbsp;
+        <button class="btn-primary"
+                (click)="CheckEmail()" [disabled]="!keyForm.dirty">Continuer
+        </button>&nbsp; &nbsp; &nbsp;
+      </section>
+    </form>
+  </div>
+  <!--Interface 2 MOT DE PASSE OUBLIE-->
+  <div class="form-area1" *ngIf="mode === 3">
+    <form [formGroup]="keyForm">
+      <div class="card-header bg-primary text-white">Récupération du mot de passe</div>
+      <div class="card-body">
+        <label>Entrez le code à six (06) chiffres envoyé dans votre boite mail</label>
+        <input type="password" formControlName="code" [(ngModel)]="user.code" (input)="checkCode($event)"
+                   placeholder="code"/>
+        <div class="text-danger" *ngIf="showC">{{errorCode}}</div>
+      </div>
+      <section>
+        <button class="btn-primary"
+                (click)="RecoverKey()">Retour
+        </button> &nbsp; &nbsp;
+        <button class="btn-primary"
+                (click)="KeyStep()">Continuer
+        </button>&nbsp; &nbsp; &nbsp;
+
+      </section>
+    </form>
+  </div>
+  <!--Interface 3 MOT DE PASSE OUBLIE-->
+  <div class="form-area1" *ngIf="mode === 4">
+    <form (ngSubmit)="changePass(keyForm)" [formGroup]="keyForm">
+      <div class="card-header bg-primary text-white">Récupération du mot de passe</div>
+      <div class="card-body">
+        <label>Entrez le nouveau mot de passe</label>
+        <input type="password" formControlName="newpass" [(ngModel)]="user.password" placeholder="Password"
+                   required=""/>
+      </div>
+      <div class="card-body">
+        <label>Confirmez le mot de passe</label>
+        <input type="password" formControlName="confpass" [(ngModel)]="user.passwordConfirmed"
+                   placeholder="Confirmer password" required=""/>
+      </div>
+      <div style="color: red; padding-top: 0.2rem" *ngIf="keyForm.controls.confpass.invalid">6 caractères
+        minimum
+      </div>
+      <ngx-spinner></ngx-spinner>
+      <section>
+        <button class="btn-primary"
+                (click)="RecoverKey()">Retour
+        </button> &nbsp; &nbsp;
+        <button class="btn-primary"
+                type="submit" [disabled]="!keyForm.dirty">Valider
+        </button>
+      </section>
+    </form>
+  </div>
+
+  <!--<section id="content" *ngIf="recover_key">
+    <form (ngSubmit)="changePass();" [formGroup]="keyForm">
+      <h3>Récupération du mot de passe</h3>
+      <div>
+        <div>
+          <input type="email" id="email" name="email" [(ngModel)]= "user.email"  placeholder="Entrer l'adresse email" formControlName="email" required>
+        </div>
+        <button type="button" (click)="SendEmail()" >Continuer</button>
+        <font class="text-danger col-sm-12" *ngIf="keyForm.controls.email.touched && !email_valid">Entrer votre adresse email</font>
+      </div>
+      <div  *ngIf="email_sent">
+        <div >
+          <input type="number" id="code" name="renewPasswordCode" [(ngModel)]= "user.renewPasswordCode"  placeholder="Entrez le code à 6 chiffres" formControlName="code" required>
+        </div>
+        <button type="button" (click)="KeyStep()" >Continuer</button>
+        <font class="text-danger col-sm-12" *ngIf="keyForm.controls.code.touched && !key_step">Code incorrecte</font>
+      </div>
+      <div  style="text-align: center">
+
+      </div>
+      <div *ngIf="key_step">
+        <input type="password" id="newpass" name="password" [(ngModel)]= "user.password"  placeholder="Entrer le nouveau mot de passe" formControlName="newpass" required>
+        <font class="text-danger col-sm-12" *ngIf="keyForm.controls.newpass.invalid && keyForm.controls.newpass.touched">Au moins 8 caractères!</font>
+      </div>
+      <div *ngIf="key_step">
+        <input type="password" formControlName="confpass" id="confPass" placeholder="Confirmer le mot de passe" required>
+        <font class="text-danger col-sm-12" *ngIf="keyForm.controls.confpass.invalid && keyForm.controls.confpass.touched">Longueur invalide</font>
+      </div>
+      <div style="text-align: center" *ngIf="key_step">
+        <button type="submit" >Valider</button>
+      </div>
+    </form>
+    <div  style="text-align: center"><a href="#" (click)="RecoverKey()">Retour</a></div>
+
+  </section>-->
+</div>
+
